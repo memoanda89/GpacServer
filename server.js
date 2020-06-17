@@ -183,51 +183,9 @@ app.post('/api/GuardaGpac',(req, res) => {
 
 
 
-app.get('/api/getCiudad/:id', (req, res) => {
-    let sql = `SELECT * FROM ciudad `;
-    let query = connection.query(sql, (err, rows) => {
-       
-        res.send(rows);
-    });
-});
-// Select single post
-app.get('/api/getServicios/:id', (req, res) => {
-    let sql = `call lavameapp.usp_consola( ${req.params.id}) `;
-    let query = connection.query(sql, (err, rows) => {
-         res.send(rows);
-    });
-});
- 
  
 
-
-app.post('/api/ActualizaWasher',(req, res) => {
-
-    console.log( req.body);
-    var ID =  req.body.Id;
-  
-    var Nombres =  req.body.nombres;
-    var Paterno =  req.body.apellido_paterno;
-    var Materno =  req.body.apellido_materno;
-     
-    var Telefono =  req.body.telefono;
-    var Zona =  req.body.zona;
-    var Lat =  req.body.latitud;
-    var Lon=  req.body.longitud;
-
-    var estatus = 1;
-    let sql = `call lavameapp.ActualizaWasher(?,?,?,?,?,?,?,?,?)  `;
-    let parametros = `  `;
-    let query = connection.query(sql, [ID,Telefono,Nombres,Paterno,Materno,Lat,Lon,Zona,estatus], (err, rows) => {
-        if(err) {
-            console.log(err);
-        }
-       
-        res.send(rows);
-       
-    });
-});
-
+ 
 
 
 //Starting server on port 8081
