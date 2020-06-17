@@ -15,10 +15,10 @@ app.use(express.static(path.join(__dirname, 'dist/lavameappServicio')));
 
 
 const connection=mysql.createConnection({
-    host     : 'myGpac.cd6tpve8jdia.us-east-2.rds.amazonaws.com',
-    user     : 'root',
-    password : 'Guillermo10',
-    database : 'Gpac'
+    host     : 'lavameappdb-ds.cubb0yiepted.us-east-2.rds.amazonaws.com',
+    user     : 'adminlvm',
+    password : 'adminlvmds2019',
+    database : 'gpac'
 });
 // const connection=mysql.createConnection({
 //     host     : 'localhost',
@@ -53,11 +53,7 @@ app.use(cors(
         res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
         next();
       });
-//Any routes will be redirected to the angular app
-// app.get('*', function(req, res) {
-//     res.sendFile(path.join(__dirname, 'dist/lavameappServicio/index.html'));
-// });
-
+ 
 app.get('/', (req, res) => res.send('Hello World!'))
 
 
@@ -80,7 +76,7 @@ app.get('/api/getCatalogo/:catalogo', (req, res) => {
     });
 });
 app.get('/api/getActivity', (req, res) => {
-    let sql = `select Id ,description FROM Gpac.activity `;
+    let sql = `select Id ,description FROM gpac.activity `;
     let query = connection.query(sql, (err, rows) => {
        var data=
        {
@@ -96,7 +92,20 @@ app.get('/api/getActivity', (req, res) => {
 
 
 app.get('/api/getTYPE', (req, res) => {
-    let sql = `select Id ,description FROM Gpac.type `;
+    let sql = `select Id ,description FROM gpac.type `;
+    let query = connection.query(sql, (err, rows) => {
+       var data=
+       {
+           catalogo:"type",
+           contenido:rows
+
+       }
+        res.send(data);
+    });
+});
+
+app.get('/api/getTYPE', (req, res) => {
+    let sql = `select Id ,description FROM gpac.type `;
     let query = connection.query(sql, (err, rows) => {
        var data=
        {
@@ -110,11 +119,11 @@ app.get('/api/getTYPE', (req, res) => {
 
 
 
-app.get('/api/getGpac', (req, res) => {
+app.get('/api/getgpac', (req, res) => {
 
 
 
-    let sql = `select * FROM Gpac.gpac_registry `;
+    let sql = `select * FROM gpac.gpacrecords `;
     let query = connection.query(sql, (err, rows) => {
         res.send(rows);
     });
@@ -123,7 +132,7 @@ app.get('/api/getGpac', (req, res) => {
 app.post('/api/filtros',(req, res) => {
 console.log(req.body);
      
-var name =  req.body.filter.name!="" ?' name= "'+ req.body.filter.name +'" and ': '';
+var name =  req.body.filter.name!="" ?' name LIKE '+"'%"+ req.body.filter.name +"%'"+ ' and ': '';
 var state =  req.body.filter.state!="" ?' state= "'+ req.body.filter.state +'" and ': '';
 
 
@@ -139,7 +148,7 @@ var state =  req.body.filter.state!="" ?' state= "'+ req.body.filter.state +'" a
 
  
 
-    let sql = `select * FROM Gpac.gpac_registry where `+name +state +specilty+functional+activty + candidate +coach +industry +recluter +type+zip;
+    let sql = `select * FROM gpac.gpacrecords where `+name +state +specilty+functional+activty + candidate +coach +industry +recluter +type+zip;
    
     var query2="";
     
@@ -152,8 +161,8 @@ var state =  req.body.filter.state!="" ?' state= "'+ req.body.filter.state +'" a
    
 });
 
-app.post('/api/GuardaGpac',(req, res) => {
-
+app.post('/api/Guardagpac',(req, res) => {
+console.log(req.body);
     var name =  req.body.GuardaGpac.name;
     var specilty =  req.body.GuardaGpac.specilty;
     var functional =  req.body.GuardaGpac.functional;
@@ -168,7 +177,7 @@ app.post('/api/GuardaGpac',(req, res) => {
     var longitud =  req.body.GuardaGpac.longitud;
     var state =  req.body.GuardaGpac.state;
  console.log(name);
-    let sql = `call Gpac.GuardaGpac(?,?,?,?,?,?,?,?,?,?,?,?,?,?)  `;
+    let sql = `call gpac.Guardagpac(?,?,?,?,?,?,?,?,?,?,?,?,?,?)  `;
     let parametros = `  `;
     let query = connection.query(sql, [ name,activty,candidate,coach,functional,industry,recluter,
         specilty,0,type,zip,latitud,longitud,state], (err, rows) => {
